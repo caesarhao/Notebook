@@ -31,4 +31,54 @@ types defined in ctypes (they are all classes. create instance like ci = c_int(2
         _fields_ = [("upperleft", POINT),
                  ("lowerright", POINT)]
 
-"""
+    class Int(Structure):
+        _fields_ = [("first_16", c_int, 16),
+                    ("second_16", c_int, 16)]
+
+    
+    """
+
+class ArmInstructionBase_S(Structure):
+     _fields_ = [
+         ("Lower28bits", c_ulong, 28),
+         ("Condition", c_ulong, 4)
+     ]
+    def encode():
+        pass
+    def decode(byteArr):
+        pass
+
+class ArmInstructionDataProcessing_S(ArmInstructionBase_S):
+     _fields_ = [
+         ("Op2", c_ulong, 12), # 0-11
+         ("Rs", c_ulong, 4), # 12-15
+         ("Rn", c_ulong, 4), # 16-19
+         ("S", c_ulong, 1), # 20
+         ("OpCode", c_ulong, 4), # 21-24
+         ("I", c_ulong, 1), # 25
+         ("Rsv1", c_ulong, 2), # 26-27, 0b00
+         ("Condition", c_ulong, 4) # 28-31
+     ]
+
+class ArmInstructionMultiply_S(ArmInstructionBase_S):
+     _fields_ = [
+         ("Rm", c_ulong, 4), # 0-3
+         ("Rsv1", c_ulong, 4), # 4-7, 0b1001
+         ("Rs", c_ulong, 4), # 8-11
+         ("Rn", c_ulong, 4), # 12-15
+         ("Rd", c_ulong, 4), # 16-19
+         ("S", c_ulong, 1), # 20
+         ("A", c_ulong, 1), # 21
+         ("Rsv1", c_ulong, 6), # 22-27, 0b000000
+         ("Condition", c_ulong, 4) # 28-31
+     ]
+
+class ArmInstruction_U(Union):
+    _fields_ = [
+        ("asBytes", c_ubyte * 4),
+        ("asHalfs", c_ushort * 2),
+        ("asWord", c_ulong * 1),
+        ("asInstructionBase", ArmInstructionBase_S),
+    ]
+
+    
