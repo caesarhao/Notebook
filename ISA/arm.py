@@ -72,9 +72,26 @@ class ArmInstructionMultiply_S(ArmInstructionBase_S):
          ("Rsv1", c_ulong, 6), # 22-27, 0b000000
          ("Condition", c_ulong, 4) # 28-31
      ]
-
+class BitsInByte(Structure):
+    _fields_ = [
+        ("Bit0", c_ubyte, 1),
+        ("Bit1", c_ubyte, 1),
+        ("Bit2", c_ubyte, 1),
+        ("Bit3", c_ubyte, 1),
+        ("Bit4", c_ubyte, 1),
+        ("Bit5", c_ubyte, 1),
+        ("Bit6", c_ubyte, 1),
+        ("Bit7", c_ubyte, 1)        
+    ]
+class NibblesInByte(Structure):
+    _fields_ = [
+       ("Nibble0", c_ubyte, 4),
+       ("Nibble1", c_ubyte, 4)
+    ]
 class ArmInstruction_U(Union):
     _fields_ = [
+       ("asBits", BitsInByte * 4),
+       ("asNibbles", NibblesInByte * 4),
         ("asBytes", c_ubyte * 4),
         ("asHalfs", c_ushort * 2),
         ("asWord", c_ulong * 1),
